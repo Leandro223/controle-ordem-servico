@@ -1,5 +1,6 @@
 package com.baracho.ordemservico.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,10 @@ public class TecnicoService {
 		
 		return obj.orElseThrow(() -> new ObjectnotFoundException("Objeto não encontrado para o id: " + id));
 		
+	}
+
+	public List<Tecnico> findAll() {
+		return tecnicoRepository.findAll();
 	}
 
 }
