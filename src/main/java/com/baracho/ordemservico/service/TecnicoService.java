@@ -3,6 +3,8 @@ package com.baracho.ordemservico.service;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
@@ -55,6 +57,15 @@ public class TecnicoService {
 			throw new DataIntegrityViolationException("Email já cadastrado no sistema.");
 		}
 		
+	}
+
+	public Tecnico update(Integer id, @Valid TecnicoDTO objDto) {
+		objDto.setId(id);
+		Tecnico oldObj = findById(id);
+		
+		validarPorCPFeEMAIL(objDto);
+		oldObj = new Tecnico(objDto);
+		return tecnicoRepository.save(oldObj);
 	}
 
 }
