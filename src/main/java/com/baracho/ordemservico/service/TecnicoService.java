@@ -9,9 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Service;
 
+import com.baracho.ordemservico.domain.Chamado;
 import com.baracho.ordemservico.domain.Pessoa;
 import com.baracho.ordemservico.domain.Tecnico;
 import com.baracho.ordemservico.domain.dtos.TecnicoDTO;
+import com.baracho.ordemservico.domain.enums.Status;
+import com.baracho.ordemservico.repository.ChamadoRepository;
 import com.baracho.ordemservico.repository.PessoaRepository;
 import com.baracho.ordemservico.repository.TecnicoRepository;
 import com.baracho.ordemservico.service.exceptions.DataIntegrityViolationException;
@@ -25,6 +28,9 @@ public class TecnicoService {
 	
 	@Autowired 
 	private PessoaRepository pessoaRepository;
+	
+	@Autowired 
+	private ChamadoRepository chamadoRepository;
 	
 	public Tecnico findById(Integer id) {
 		Optional<Tecnico> obj = tecnicoRepository.findById(id);
@@ -66,6 +72,22 @@ public class TecnicoService {
 		validarPorCPFeEMAIL(objDto);
 		oldObj = new Tecnico(objDto);
 		return tecnicoRepository.save(oldObj);
+	}
+
+	public void delete(Integer id) {
+		Tecnico obj = findById(id);
+		
+		for(Chamado chamado : obj.getChamados()) {
+			if(chamado.getStatus() != Status.ABERTO && chamado.getStatus() != Status.ANDAMENTO) {
+				chamadoRepository.deleteById(chamado.getId());
+			}else {
+				throw new DataIntegrityViolationException("O tecnico tem chamado em andamento e não pode ser excluído!");
+			}
+		}
+		
+		tecnicoRepository.deleteById(id);
+		
+		
 	}
 
 }
