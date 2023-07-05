@@ -7,6 +7,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import com.baracho.ordemservico.domain.Chamado;
@@ -17,6 +18,8 @@ import com.baracho.ordemservico.domain.enums.Prioridade;
 import com.baracho.ordemservico.domain.enums.Status;
 import com.baracho.ordemservico.repository.ChamadoRepository;
 import com.baracho.ordemservico.service.exceptions.ObjectnotFoundException;
+
+
 
 @Service
 public class ChamadoService {
@@ -77,6 +80,27 @@ public class ChamadoService {
 		chamado.setObservacoes(objDto.getObservacoes());
 
 		return chamado;
+	}
+
+	public void delete(Integer id) {
+		Optional<Chamado> chamadoOpt = chamadoRepository.findById(id); 
+		 
+		if(chamadoOpt.isPresent()) {
+			Chamado chamado = chamadoOpt.get();
+			
+			if(chamado.getStatus() != Status.ABERTO && chamado.getStatus() != Status.ANDAMENTO) {
+				chamadoRepository.deleteById(id);
+				
+			}else {
+				throw new DataIntegrityViolationException("Não é possivel remover o chamado. O status é ABERTO ou ANDAMENTO");
+				
+				}
+			
+		}else {
+			throw new ObjectnotFoundException("Chamado não é encontrado");
+			
+		}
+
 	}
 
 }
