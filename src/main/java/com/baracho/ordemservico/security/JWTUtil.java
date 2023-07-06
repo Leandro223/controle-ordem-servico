@@ -1,6 +1,7 @@
 package com.baracho.ordemservico.security;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -18,9 +19,10 @@ public class JWTUtil {
 	@Value("${jwt.secret}")
 	private String secret;
 	
-	public String generateToken(String email) {
+	public String generateToken(String email, List<String> roles) {
 		return Jwts.builder()
 				.setSubject(email)
+				.claim("role", roles)
 				.setExpiration(new Date(System.currentTimeMillis() + expiration)) 
 				.signWith(SignatureAlgorithm.HS512, secret.getBytes()) 
 				.compact();
