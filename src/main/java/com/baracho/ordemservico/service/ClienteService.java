@@ -6,7 +6,7 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.baracho.ordemservico.domain.Chamado;
@@ -32,6 +32,9 @@ public class ClienteService {
 	@Autowired 
 	private ChamadoRepository chamadoRepository;
 	
+	@Autowired 
+	private BCryptPasswordEncoder encoder;
+	
 	public Cliente findById(Integer id) {
 		Optional<Cliente> obj = clienteRepository.findById(id);
 		
@@ -45,6 +48,7 @@ public class ClienteService {
 
 	public Cliente create(ClienteDTO objDto) {
 		objDto.setId(null);
+		objDto.setSenha(encoder.encode(objDto.getSenha()));
 		Cliente newObj = new Cliente(objDto);
 		validarPorCPFeEMAIL(objDto);
 		return clienteRepository.save(newObj);
@@ -68,6 +72,9 @@ public class ClienteService {
 	public Cliente update(Integer id, @Valid ClienteDTO objDto) {
 		objDto.setId(id);
 		Cliente oldObj = findById(id);
+		
+		if(!objDto.getSenha().equals(oldObj.getSenha())) 
+			objDto.setSenha(encoder.encode(objDto.getSenha()));
 		
 		validarPorCPFeEMAIL(objDto);
 		oldObj = new Cliente(objDto);
