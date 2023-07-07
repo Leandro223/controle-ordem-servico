@@ -31,6 +31,9 @@ public class TecnicoDTO implements Serializable {
 	@NotNull(message = "o campo SENHA é requerido ")
 	protected String senha;
 	
+	
+	protected String telefone;
+	
 	protected Set<Integer> perfis = new HashSet<>();
 	
 	@JsonFormat(pattern = "dd/MM/yyyy")
@@ -48,6 +51,7 @@ public class TecnicoDTO implements Serializable {
 		this.cpf = obj.getCpf();
 		this.email = obj.getEmail();
 		this.senha = obj.getSenha();
+		this.telefone = obj.getTelefone();
 		this.perfis = obj.getPerfis().stream().map(x -> x.getCod()).collect(Collectors.toSet());
 		this.dataCriacao = obj.getDataCriacao();
 		addPerfil(Perfil.CLIENTE);
@@ -91,6 +95,14 @@ public class TecnicoDTO implements Serializable {
 
 	public void setSenha(String senha) {
 		this.senha = senha;
+	}
+	
+	public String getTelefone() {
+		return telefone;
+	}
+
+	public void setTelefone(String telefone) {
+		this.telefone = telefone;
 	}
 
 	public Set<Perfil> getPerfis() {
