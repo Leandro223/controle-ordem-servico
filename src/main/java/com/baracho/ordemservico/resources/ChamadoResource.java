@@ -19,12 +19,17 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.baracho.ordemservico.domain.Chamado;
+import com.baracho.ordemservico.domain.RegistroUpdate;
 import com.baracho.ordemservico.domain.dtos.ChamadoDTO;
+import com.baracho.ordemservico.repository.RegistroUpdateRepository;
 import com.baracho.ordemservico.service.ChamadoService;
 
 @RestController
 @RequestMapping(value = "/chamados")
 public class ChamadoResource {
+	
+	@Autowired 
+	private RegistroUpdateRepository registroUpdateRepository;
 	
 	@Autowired
 	private ChamadoService chamadoService;
@@ -33,6 +38,24 @@ public class ChamadoResource {
 	public ResponseEntity<ChamadoDTO> findById(@PathVariable Integer id){
 		Chamado obj = chamadoService.findById(id);
 		return ResponseEntity.ok().body(new ChamadoDTO(obj));
+	}
+	
+	@GetMapping("/{id}/registro") 
+	public ResponseEntity<List<RegistroUpdate>> getRegistroUpdate(@PathVariable("id") Integer chamadoId){ 
+		if(!chamadoService.existsChamadoById(chamadoId)) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		List<RegistroUpdate> registros = registroUpdateRepository.findAllByChamadoId(chamadoId);
+		
+		if(registros.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		
+		return ResponseEntity.ok(registros);
+		
+		
+		
 	}
 	
 	@GetMapping 
