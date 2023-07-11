@@ -2,6 +2,7 @@ package com.baracho.ordemservico.resources;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
@@ -66,5 +67,11 @@ public class ClienteResource {
 		
 		return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping(value = "/clientes-por-mes")
+	  public ResponseEntity<List<Map<String, Integer>>> getClientesPorMes() {
+	    List<Map<String, Integer>> clientesPorMes = clienteService.getClientesPorMesTeste();
+	    return ResponseEntity.ok().body(clientesPorMes);
+	  }
 
 }

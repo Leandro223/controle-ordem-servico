@@ -1,7 +1,15 @@
 package com.baracho.ordemservico.service;
 
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
@@ -51,6 +59,7 @@ public class ClienteService {
 		objDto.setSenha(encoder.encode(objDto.getSenha()));
 		Cliente newObj = new Cliente(objDto);
 		validarPorCPFeEMAIL(objDto);
+		
 		return clienteRepository.save(newObj);
 		
 		
@@ -96,5 +105,55 @@ public class ClienteService {
 		
 		
 	}
+	
+	public List<Map<String, Integer>> getClientesPorMesReal() {
+	    List<Cliente> clientes = clienteRepository.findAll();
+	    List<Month> meses = Arrays.asList(Month.values());
+
+	    return meses.stream().map(mes -> {
+	      int clientesNoMes = (int) clientes.stream()
+	          .filter(cliente -> cliente.getDataCriacao().getMonth() == mes)
+	          .count();
+
+	      return Map.of("mes", mes.getValue(), "clientes", clientesNoMes);
+	    }).collect(Collectors.toList());
+	  }
+	
+	public List<Map<String, Integer>> getClientesPorMesTeste() {
+	    // Gera uma lista fictícia de clientes com datas aleatórias
+	    List<Map<String, LocalDate>> clientes = gerarClientesFicticios();
+
+	    List<Month> meses = Arrays.asList(Month.values());
+
+	    return meses.stream().map(mes -> {
+	        int clientesNoMes = (int) clientes.stream()
+	                .filter(cliente -> cliente.get("dataCriacao").getMonth() == mes)
+	                .count();
+
+	        return Map.of("mes", mes.getValue(), "clientes", clientesNoMes);
+	    }).collect(Collectors.toList());
+	}
+
+	private List<Map<String, LocalDate>> gerarClientesFicticios() {
+	    List<Map<String, LocalDate>> clientes = new ArrayList<>();
+	    Random random = new Random();
+
+	    // Gera 100 clientes com datas fictícias nos últimos 12 meses
+	    for (int i = 0; i < 1000; i++) {
+	        int monthValue = random.nextInt(12) + 1; // Gera um valor aleatório entre 1 e 12
+	        int year = 2023; // Define o ano fictício
+	        int day = random.nextInt(28) + 1; // Gera um valor aleatório entre 1 e 28
+
+	        Month month = Month.of(monthValue);
+	        LocalDate dataCriacao = LocalDate.of(year, month, day);
+	        Map<String, LocalDate> cliente = new HashMap<>();
+	        cliente.put("dataCriacao", dataCriacao);
+	        clientes.add(cliente);
+	    }
+
+	    return clientes;
+	}
+	
+
 
 }

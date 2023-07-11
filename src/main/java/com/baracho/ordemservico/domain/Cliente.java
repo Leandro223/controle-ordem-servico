@@ -20,6 +20,9 @@ public class Cliente extends Pessoa {
 	@JsonIgnore
 	@OneToMany(mappedBy = "cliente")
 	private List<Chamado> chamados = new ArrayList<>();
+	
+	
+	
 
 	public Cliente() {
 		super();
@@ -51,6 +54,9 @@ public class Cliente extends Pessoa {
 		this.chamados = chamados;
 	}
 	
+
+   
+}
 	
 
-}
+
