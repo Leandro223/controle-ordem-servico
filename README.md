@@ -13,8 +13,8 @@ Este projeto é uma API de controle de ordem de serviço desenvolvida em Java e 
 
 - Java 11
 - Spring Boot 2.3.12.RELEASE
-- Banco de dados (por exemplo, MySQL, PostgreSQL)
-- Maven ou Gradle
+- Banco de dados (MySQL)
+- Maven 
 
 ## Configuração
 
