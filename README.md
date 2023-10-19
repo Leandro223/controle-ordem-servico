@@ -11,8 +11,8 @@ Este projeto é uma API de controle de ordem de serviço desenvolvida em Java e 
 
 ## Requisitos
 
-- Java 8 ou superior
-- Spring Boot 2.x
+- Java 11
+- Spring Boot 2.3.12.RELEASE
 - Banco de dados (por exemplo, MySQL, PostgreSQL)
 - Maven ou Gradle
 
